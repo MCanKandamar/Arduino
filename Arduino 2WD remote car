@@ -1,0 +1,87 @@
+#include <SPI.h>
+#include "nRF24L01.h"
+#include "RF24.h"   
+
+int mesaj[1];
+
+RF24 alici(9,10);
+
+//const int kanal = 131;
+const uint64_t pipe = 0xE8E8F0F0E1LL;
+
+int led = 2;
+int right_1 = 3;
+int right_2 = 4;
+int left_1 = 5;
+int left_2 = 6;
+
+
+void setup(){
+  
+  alici.begin();
+  alici.openReadingPipe(1,pipe);
+  alici.startListening();
+  pinMode(led, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop(){
+  if (alici.available())
+  {
+    bool done = false;    
+    while (!done){
+      
+      done = alici.read(&mesaj, sizeof(mesaj));    
+      Serial.println(mesaj[0]);
+      if (mesaj[0] == 50){  //
+        delay(10);
+        digitalWrite(led, HIGH);
+        
+      }
+      else if ( mesaj[0] == 60){  //UP
+        delay(10);
+        digitalWrite(right_1, LOW);
+        digitalWrite(right_2, HIGH);
+        digitalWrite(left_1, LOW);
+        digitalWrite(left_2, HIGH);
+      }    
+      else if ( mesaj[0] == 70){ //DOWN
+        delay(10);
+        digitalWrite(right_1, HIGH);
+        digitalWrite(right_2, LOW);
+        digitalWrite(left_1, HIGH);
+        digitalWrite(left_2, LOW);
+      }      
+      else if ( mesaj[0] == 80){  //RIGHT
+        digitalWrite(right_1, HIGH);
+        digitalWrite(right_2, LOW);
+        digitalWrite(left_1, LOW);
+        digitalWrite(left_2, HIGH);
+        delay(10);
+        digitalWrite(right_1, LOW);
+        digitalWrite(right_2, LOW);
+        digitalWrite(left_1, LOW);
+        digitalWrite(left_2, LOW);
+      }      
+      else if ( mesaj[0] == 90){  //LEFT
+        digitalWrite(right_1, LOW);
+        digitalWrite(right_2, HIGH);
+        digitalWrite(left_1, HIGH);
+        digitalWrite(left_2, LOW);
+        delay(10);
+        digitalWrite(right_1, LOW);
+        digitalWrite(right_2, LOW);
+        digitalWrite(left_1, LOW);
+        digitalWrite(left_2, LOW);
+      }
+      else {
+        digitalWrite(right_1, LOW);
+        digitalWrite(right_2, LOW);
+        digitalWrite(left_1, LOW);
+        digitalWrite(left_2, LOW);
+        digitalWrite(led, LOW);
+      }
+      delay(10);
+    }
+  }
+}
