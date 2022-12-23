@@ -1,0 +1,106 @@
+#include  <SPI.h> 
+#include "nRF24L01.h"
+#include "RF24.h"    
+
+ 
+int mesaj[1];  
+    
+RF24 verici(9,10);  // CE CSN 
+
+//const int kanal = 131;
+const uint64_t pipe = 0xE8E8F0F0E1LL;
+
+
+int up_button = 2;    //A buton
+int down_button = 4;  //C buton
+int right_button = 3; //B buton
+int left_button = 5;  //D buton
+int f_button = 7;     //E buton
+int e_button = 6;     //F buton
+int click_button = 8; //Click buton
+int x_axis = A0;      //Joystick X
+int y_axis = A1;      //Joystick Y
+
+void setup()
+{
+  Serial.begin(9600);
+  verici.begin(); 
+  verici.openWritingPipe(pipe);
+  verici.stopListening();
+
+  pinMode(up_button, INPUT);
+  pinMode(down_button, INPUT);
+  pinMode(right_button, INPUT);
+  pinMode(left_button, INPUT);
+  pinMode(f_button, INPUT);
+  pinMode(e_button, INPUT);
+  pinMode(click_button, INPUT);
+  digitalWrite(f_button, HIGH);
+
+}
+
+
+void loop()
+{
+  //int y = map(analogRead(y_axis),0,6105,0,255);
+  //int x = map(analogRead(x_axis),0,6105,0,255);
+  //Serial.print("x axis:");
+  //Serial.println(x);
+  //Serial.print("y axis:");
+  //Serial.println(y);
+  //Serial.println("------------------");
+  //mesaj[1] = x;
+  //mesaj[2] = y;
+
+  //verici.write(&mesaj, x);
+  //verici.write(&mesaj, sizeof(y));
+  
+  //Serial.println(mesaj[0]);
+  verici.write(&mesaj, sizeof(mesaj));
+
+  if (digitalRead(up_button) == LOW)                  //UP
+  { 
+    mesaj[0] = 10; 
+    Serial.println("a button");
+  }
+
+  else if (digitalRead(down_button) == LOW)           //DOWN
+  {
+    mesaj[0] = 20;
+    Serial.println("c button");
+  }
+
+  else if (digitalRead(right_button) == LOW)          //RIGHT
+  {
+    mesaj[0] = 30;
+    Serial.println("b button");
+  }
+
+  else if (digitalRead(left_button) == LOW)           //LEFT
+  {
+    mesaj[0] = 40;
+    Serial.println("d button");
+  }
+
+  else if (digitalRead(e_button) == LOW)              //E buton
+  {
+    mesaj[0] = 50;
+    Serial.println("e button");
+  }
+
+  else if (digitalRead(f_button) == LOW)              //F buton
+  {
+    mesaj[0] = 60;
+    Serial.println("f button");
+  } 
+
+  else if (digitalRead(click_button) == LOW)          //Click buton
+  {
+    mesaj[0] = 100;
+    Serial.println("click button");
+  }
+  else
+  {
+    mesaj[0] = 0;
+  }
+}
