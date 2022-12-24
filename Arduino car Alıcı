@@ -3,11 +3,10 @@
 #include "RF24.h"   
 
 
-
-RF24 alici(9,10);
+RF24 alici(9,10);   // CE CSN pinleri
 int mesaj[1];
-
 const uint64_t pipe = 0xE8E8F0F0E1LL;
+
 
 int right_1 = 3;      // pin in2 -> pin 3
 int right_2 = 4;      // pin in3 -> pin 4
@@ -16,14 +15,15 @@ int left_2 = 6;       // pin in1 -> pin 6
 
 
 void setup(){
-  
   alici.begin();
   alici.openReadingPipe(1,pipe);
   alici.startListening();
   Serial.begin(9600);
 }
 
+
 void loop(){
+  
   if (alici.available())
   {
     bool done = false;    
